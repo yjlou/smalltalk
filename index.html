@@ -1,0 +1,557 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shhh.pw -- Protect Your Whisper with Password</title>
+    <link rel="icon" type="image/png" href="shhh.png" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125586496-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-125586496-1');
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+
+    <!-- crypto libs -->
+    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/emn178/js-sha256/master/build/sha256.min.js"></script>
+
+    <style>
+      .inline {
+        display: inline;
+      }
+    </style>
+  </head>
+
+  <body><div class="container">
+    <h2 class="inline"><a href="http://shhh.pw">Shhh.pw</a></h2>
+    <h5 class="right"><a href="mailto:yjlou.tw@gmail.com" target="_blank">
+      <i class="small material-icons">email</i>
+    </a></h5>
+
+    <h5>Shhh.pw is a end-to-end and all client-side encrypted messaging
+       service <a id="read_more" href="#">... more</a><span id="more_0">.
+       It is perfect to be used to exchange confidential or secret information
+       to another person or a group of people with a pre-shared password, which
+       is the only key able to decrypt the message.</span></h5>
+    <span id="more_1">
+    <h5>A person having the URL you sent but not having the password cannot
+       decrypt the message. This implies even your ISP cannot decrypt it. Since
+       we don't keep your password, even we cannot decrypt your message.</h5>
+
+    <h5>Warning: there ara still some weakness i the communication. For example,
+       a browser extension with the ability to read the full content of a page
+       can still read your information. Turn off those extensions if you have
+       concerns.</h5>
+    </span>
+    
+    <div id="dec_div">
+      <div id="decrypt_prompt">
+        <h4>Decrypt</h4>
+
+        <!-- invisible -->
+        <textarea id="cipher_hex" rows="4" cols="80"></textarea>
+        <input type=text id="dec_iv_hex" value="The IV">
+
+        <div class="row">
+          <div class="input-field col s12">
+            <h5><span id="dec_hint_desc">Hint: </span><span id="dec_hint"></span></h5>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <input type=password id="dec_pwd">
+            <label for="dec_pwd">Enter your password here</label>
+          </div>
+
+          <div class="input-field col s2">
+            <button id="btn_dec_visible" class="btn waves-effect waves-light" type="submit">
+              <i class="small material-icons">visibility</i>
+            </button>
+            <button id="btn_dec_invisible" class="btn waves-effect waves-light" type="submit">
+              <i class="small material-icons">visibility_off</i>
+            </button>
+          </div>
+
+          <div class="input-field col s4">
+            <button id="btn_decrypt" class="btn waves-effect waves-light"
+                    type="submit">
+              Decrypt
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="decrypted_div">
+        <div class="row">
+          <div class="input-field col s12">
+            <h4>Decrypted Text:</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s11">
+            <textarea id="decrypted_text" class="materialize-textarea"
+                      rows="4" cols="80" readonly></textarea>
+          </div>
+          <div class="input-field col s1">
+            <button id="btn_copy_decrypted" class="btn waves-effect waves-light"
+                    type="submit" name="action">
+            <i class="small material-icons">content_copy</i>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <button id="btn_reply" class="btn waves-effect waves-light"
+                    type="submit"> Reply </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="enc_div">
+      <h4 id="enc_h2_encrypt" class="row col s12">Send</h4>
+      <h4 id="enc_h2_reply" class="row col s12">Reply</h4>
+      <div class="row">
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="plain_text" class="materialize-textarea"
+                        rows="4" cols="80"></textarea>
+              <label for="plain_text">
+                * Enter the text you want to send (can be multiple lines)
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="enc_hint" type=text class="validate">
+              <label for="enc_hint">Hint of password. Will be prompted to
+                                    receiver in plain text.</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s6">
+              <input id="enc_pwd" type=password class="validate">
+              <label for="enc_pwd">* Enter your password here</label>
+            </div>
+
+            <div class="input-field col s2">
+              <button id="btn_enc_visible" class="btn waves-effect waves-light" type="submit">
+                <i class="small material-icons">visibility</i>
+              </button>
+              <button id="btn_enc_invisible" class="btn waves-effect waves-light" type="submit">
+                <i class="small material-icons">visibility_off</i>
+              </button>
+            </div>
+
+            <div class="input-field col s4">
+              <button id="btn_encrypt" class="btn waves-effect waves-light"
+                      type="submit"> Encrypt </button>
+            </div>
+          </div>
+
+          <div id="url_div" class="row">
+            <div class="input-field col s10">
+              <input type=text id="url_for_share" readonly
+                     value="URL for share is not generated yet.">
+              <label for "url_for_share">URL for share</label>
+            </div>
+            <div class="input-field col s2">
+              <button id="btn_copy_url" class="btn waves-effect waves-light"
+                      type="submit" name="action">
+              <i class="small material-icons">content_copy</i>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <script>
+      // Credits: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+      function copyToClipboard(str) {
+        const el = document.createElement('textarea');
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      }
+
+      // from somewhere in stackoverflow
+      var getUrl = function(href) {
+        // Given a relative path or parameters, returns an A object of that.
+        var l = document.createElement("a");
+        l.href = href;
+        if (l.href) {
+          // The normal case. 'l' is a URL.
+          return l;
+        } else {
+          // The local case. At least we can append the query string to the URL.
+          return href;
+        }
+      };
+
+      
+      function ShortenUrl(long_url, func) {
+        // Ask the shortener service to return a short URL.
+        //
+        // Args:
+        //   long_url: the URL to compress.
+        //   func: callback in response.
+        //         (status_code, short_url)
+        //
+        $.getJSON("http://api.bitly.com/v3/shorten?callback=?", { 
+            "format": "json",
+            "apiKey": "R_f384bb9a1d1248f4a12e72a07b98f7e2",
+            "login": "o_67j98qnsjg",
+            "longUrl": long_url
+          }, function(resp) {
+            // resp:
+            //   data:
+            //     global_hash: "2OWGqDd"
+            //     hash: "2OWGqmH"
+            //     long_url: "https://shhh.pw/?iv=1232"
+            //     new_hash: 1
+            //     url: "http://bit.ly/2OWGqmH"
+            //   status_code: 200
+            //   status_txt: "OK"
+            func(resp.status_code, resp.data.url);
+          }
+        )
+      }
+
+      // Maintains the toggle-able buttons.
+      function Toggleable(btn_on, btn_off, is_on, updated) {
+        // Args:
+        //   btn_on: the jQuery object of ON.
+        //   btn_off: the jQuery object of OFF.
+        //   is_on: function returning true if the status is ON.
+        //   updated(on): callback function when state changed.
+        //                If the new state is ON, then |on| is set to true.
+
+        var self_ = this;
+        this.btn_on_ = btn_on;
+        this.btn_off_ = btn_off;
+        this.is_on_ = is_on;
+        this.updated_ = updated;
+
+        this.setOn = function() {
+          self_.btn_off_.hide();
+          self_.btn_on_.show();
+          self_.updated_(true);
+        };
+
+        this.setOff = function() {
+          self_.btn_on_.hide();
+          self_.btn_off_.show();
+          self_.updated_(false);
+        };
+
+        this.update = function() {
+          if (self_.is_on_()) {
+            self_.setOn();
+          } else {
+            self_.setOff();
+          }
+        };
+
+        // Mouse click events.
+        self_.btn_on_.click(function() {
+          self_.setOff();
+          return false;  // for submit type.
+        });
+        self_.btn_off_.click(function() {
+          self_.setOn();
+          return false;  // for submit type.
+        });
+
+        // Init
+        self_.update();
+      }
+
+      function Visibility(pwd, btn_on, btn_off) {
+        // Args:
+        //   pwd: a jQuery object of the password field.
+        //   btn_on: a jQuery object of the ON.
+        //   btn_off: a jQuery object of the OFF.
+
+        var self_ = this;
+        this.pwd_ = pwd;
+        this.btn_on_ = btn_on;
+        this.btn_off_ = btn_off;
+
+        var toggleable = new Toggleable(btn_on, btn_off,
+          function() {  // is_on
+            return (self_.pwd_.attr("type") != "password");
+          },
+          function(on) {  // updated
+            if (on) {
+              self_.pwd_.attr("type", "text");
+            } else {
+              self_.pwd_.attr("type", "password");
+            }
+          }
+        );
+      }
+
+      // Visible button for Encrypt password.
+      var enc_visibility = new Visibility($("#enc_pwd"), $("#btn_enc_visible"), $("#btn_enc_invisible"));
+      var dev_visibility = new Visibility($("#dec_pwd"), $("#btn_dec_visible"), $("#btn_dec_invisible"));
+
+      // https://stackoverflow.com/questions/8486099/how-do-i-parse-a-url-query-parameters-in-javascript
+      function getJsonFromUrl() {
+        // Returns URL parameters in JSON form.
+        var query = location.search.substr(1);
+        var result = {};
+        query.split("&").forEach(function(part) {
+          var item = part.split("=");
+          result[item[0]] = decodeURIComponent(item[1]);
+        });
+        return result;
+      }
+
+      var params = getJsonFromUrl();
+
+      // Auto-select-all when click on text box and area.
+      $("input:text").focus(function() { $(this).select(); } );
+      $("textarea").focus(function() { $(this).select(); } );
+
+      // Initial UI state.
+      $("#enc_div").hide();
+      $("#dec_div").hide();
+      $("#decrypted_div").hide();
+      $("#cipher_hex").hide();
+      $("#dec_iv_hex").hide();
+      $("#more_0").hide();
+      $("#more_1").hide();
+      $("#enc_h2_reply").hide();
+      $("#url_div").hide();
+
+      if (!params["cipher_hex"]) {
+        // Encrypt, display Cipher section.
+        $("#enc_div").show();
+        $("#plain_text").focus();
+      } else {
+        // Decrypt. Display De-cipher section.
+        $("#dec_div").show();
+        $("#dec_pwd").focus();
+
+        // Parse cipher text from URL parameter and fill into |cipher_hex|.
+        $("#cipher_hex").val(params["cipher_hex"]);
+        $("#dec_iv_hex").val(params["iv_hex"]);
+        if (params["hint"]) {
+          $("#dec_hint").text(params["hint"]);
+        } else {
+          // No hint provided. Don't show the description of hint.
+          $("#dec_hint_desc").hide();
+        }
+      }
+
+      function gen_iv() {
+        // Returns an array of integers (16-byte).
+        var iv = [];
+        for (var i = 0; i < 16; i++) {
+          iv.push(Math.floor(Math.random() * 256));
+        }
+
+        return iv;
+      }
+
+      function hash256(msg) {
+        // Returns an array of integers (32-byte).
+        var hash = sha256.create();
+        hash.update(msg);
+        return hash.digest();
+      }
+
+      function block_enc(msg) {
+        // Returns 16-byte blocks with length info and padding
+        var len = msg.length;
+        var output = [len % 256, Math.floor(len / 256)].concat(Array.from(msg));  // little-endian
+        for(var i = 0; (16 - (i < output.length % 16)) % 16; i++) {
+          output.push(i);
+        }
+
+        return output;
+      }
+
+      function block_dec(msg) {
+        // Returns a string
+        var len = msg[0] + msg[1] * 256;
+        return aesjs.utils.utf8.fromBytes(msg.slice(2, 2 + len));
+      }
+
+      function btn_encrypt_clicked() {
+        // Check key is input already.
+        var enc_pwd = $("#enc_pwd").val();
+        if (!enc_pwd) {
+          M.toast({html: 'Encrypt key is not provided yet!',
+                   displayLength: 3000});
+          return;
+        }
+
+        // Encrypt the message.
+        var plain_text = aesjs.utils.utf8.toBytes($("#plain_text").val());
+        var iv_bytes = gen_iv();
+        var iv_hex = aesjs.utils.hex.fromBytes(iv_bytes);
+        var enc_key = hash256(aesjs.utils.utf8.toBytes(enc_pwd) + iv_bytes);
+        var aesCbc = new aesjs.ModeOfOperation.cbc(enc_key, iv_bytes);
+        var encrypted_bytes = aesCbc.encrypt(block_enc(plain_text));
+        var encrypted_hex = aesjs.utils.hex.fromBytes(encrypted_bytes);
+        var hint = encodeURIComponent($("#enc_hint").val());
+
+        // Update |cipher_hex|.
+        $("#cipher_hex").val(encrypted_hex);
+        $("#dec_iv_hex").val(iv_hex);
+
+        // Update the |url_for_share|.
+        var url_for_share = getUrl(
+            "?iv_hex=" + iv_hex +
+            "&cipher_hex=" + encrypted_hex +
+            "&hint=" + hint).href;
+        $("#url_for_share").val(url_for_share);
+        $("#url_div").show();
+
+        // Check the URL length.
+        actual_len = $("#url_for_share").val().length;
+        max_url_len = 2053;
+        if (actual_len > max_url_len) {
+          M.toast({html: 'The generated URL is too long. Must be shorter than [' + max_url_len +
+                         '] bytes, but actually [' + actual_len + '] bytes.',
+                   displayLength: 10000});
+          return;
+        }
+
+        // If this is a local development version, insert the host name before shortening.
+        if (!url_for_share.startsWith("http")) {
+          url_for_share = "http://shhh.pw/" + url_for_share;
+        }
+
+        // Shorten it!
+        ShortenUrl(url_for_share, function(status, short_url) {
+          if (status == 200) {
+            $("#url_for_share").val(short_url);
+          } else {
+            M.toast({html: 'Cannot shorten the URL. Error code: [' + status + ']',
+                     displayLength: 10000});
+            return;
+          }
+        });
+      }
+
+      function btn_decrypt_clicked() {
+        // Check key is input already.
+        var dec_pwd = $("#dec_pwd").val();
+        if (!dec_pwd) {
+          alert("Decrypt key is not provided yet!");
+          return;
+        }
+
+        // Decrypt the message.
+        var cipher_bytes = aesjs.utils.hex.toBytes($("#cipher_hex").val());
+        var iv_bytes = aesjs.utils.hex.toBytes($("#dec_iv_hex").val());
+        var dec_key = hash256(aesjs.utils.utf8.toBytes(dec_pwd) + iv_bytes);
+        var aesCbc = new aesjs.ModeOfOperation.cbc(dec_key, iv_bytes);
+        var decrypted_bytes = aesCbc.decrypt(cipher_bytes);
+
+        var plain_text = block_dec(decrypted_bytes);
+
+        // Fill into the |decrypted_text|.
+        $("#decrypted_div").show();
+        $("#decrypted_text").val(plain_text);
+        M.textareaAutoResize($('#decrypted_text'));
+
+        // Hide the key fields.
+        $("#decrypt_prompt").hide();
+      }
+
+      function btn_reply_clicked() {
+        $("#enc_div").show();
+        $("#decrypt_prompt").hide();
+        $("#btn_reply").hide();
+        $("#enc_h2_encrypt").hide();
+        $("#enc_h2_reply").show();
+        $("#plain_text").focus();
+
+        // Pass the password to encryption.
+        $("#enc_pwd").attr('type', 'password');
+        $("#enc_pwd").val($("#dec_pwd").val());
+
+        // Pass hint field.
+        $("#enc_hint").val($("#dec_hint").text());
+
+        // Update the pre-filled password field.
+        M.updateTextFields();
+      }
+
+      // Button click events!
+      $("#btn_encrypt").on( "click", function(event) {
+        btn_encrypt_clicked();
+        return false;  // not submit the form
+      });
+      $("#btn_decrypt").on( "click", function(event) {
+        btn_decrypt_clicked();
+        return false;
+      });
+      $("#btn_reply").on( "click", function(event) {
+        btn_reply_clicked();
+        return false;
+      });
+      $("#read_more").on( "click", function(event) {
+        $("#read_more").hide();
+        $("#more_0").show();
+        $("#more_1").show();
+        return false;
+      });
+      $("#btn_copy_url").on( "click", function(event) {
+        copyToClipboard($("#url_for_share").val());
+        M.toast({html: 'URL copied.'})
+        return false;
+      });
+      $("#btn_copy_decrypted").on( "click", function(event) {
+        copyToClipboard($("#decrypted_text").val());
+        M.toast({html: 'URL copied.'})
+        return false;
+      });
+
+      // ENTER key pressed.
+      $("#enc_hint").keypress(function(event) {
+        if (event.which == 13) {
+          $("#enc_pwd").focus();
+          return false;
+        }
+      });
+      $("#enc_pwd").keypress(function(event) {
+        if (event.which == 13) {
+          btn_encrypt_clicked();
+          return false;
+        }
+      });
+      $("#dec_pwd").keypress(function(event) {
+        if (event.which == 13) {
+          btn_decrypt_clicked();
+          return false;
+        }
+      });
+    </script>
+  </div><!-- end of container --></body>
+</html>
