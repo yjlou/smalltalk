@@ -319,6 +319,15 @@
         );
       }
 
+      function EnforceHttps() {
+        // Redirect to HTTPS (for geo location API). For non-local file and non-192.168. hosts.
+        if (location.protocol == 'http:' && !location.hostname.startsWith("192.168.")) {
+          location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+      }
+
+      EnforceHttps();
+
       // Visible button for Encrypt password.
       var enc_visibility = new Visibility($("#enc_pwd"), $("#btn_enc_visible"), $("#btn_enc_invisible"));
       var dev_visibility = new Visibility($("#dec_pwd"), $("#btn_dec_visible"), $("#btn_dec_invisible"));
