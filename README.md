@@ -3,4 +3,4 @@
 
 A person having the URL you sent but not having the password cannot decrypt the message. This implies even your ISP cannot decrypt it. Since we don't keep your password, even we cannot decrypt your message.
 
-Warning: there are still some weakness i the communication. For example, a browser extension with the ability to read the full content of a page can still read your information. Turn off those extensions if you have concerns.
+Warning: there are still some weaknesses in the communication. For example, a browser extension with the ability to read the full content of a page can still read your information. Turn off those extensions if you have concerns.
