@@ -212,12 +212,13 @@
         // Given a relative path or parameters, returns an A object of that.
         var l = document.createElement("a");
         l.href = href;
-        if (l.href) {
-          // The normal case. 'l' is a URL.
-          return l.href;
-        } else {
+
+        if (!l.href || l.href.startsWith("externalfile")) {
           // The local developping code. At least we can append the query string to the URL.
           return href;
+        } else {
+          // The normal case. 'l' is a URL.
+          return l.href;
         }
       };
 
@@ -348,7 +349,18 @@
       // https://stackoverflow.com/questions/8486099/how-do-i-parse-a-url-query-parameters-in-javascript
       function getJsonFromUrl() {
         // Returns URL parameters in JSON form.
-        var query = location.search.substr(1);
+
+        // If the info are carried in hashtag, use it.
+        var hash = window.location.hash;
+        if (hash) {
+          var query = hash.substr(1);
+        } else {
+          // Otherwise, use it from the parameters.
+          var query = location.search.substr(1);
+        }
+
+        console.log("The query string retried: " + query);
+
         var result = {};
         query.split("&").forEach(function(part) {
           var item = part.split("=");
@@ -453,7 +465,7 @@
 
         // Update the |url_for_share|.
         var url_for_share = getUrl(
-            "?iv_hex=" + iv_hex +
+            "#iv_hex=" + iv_hex +
             "&cipher_hex=" + encrypted_hex +
             "&hint=" + hint);
         $("#url_for_share").val(url_for_share);
@@ -469,12 +481,13 @@
           return;
         }
 
-        // If this is a local development version, insert the host name before shortening.
+        // If this is a local development code, insert the host name before shortening.
         if (!url_for_share.startsWith("http")) {
-          url_for_share = "http://shhh.pw/" + url_for_share;
+          url_for_share = "https://shhh.pw/" + url_for_share;
         }
 
         // Shorten it!
+        console.log("URL to be shortened: " + url_for_share);
         ShortenUrl(url_for_share, function(status, short_url) {
           if (status == 200) {
             $("#url_for_share").val(short_url);
