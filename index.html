@@ -209,9 +209,9 @@
         l.href = href;
         if (l.href) {
           // The normal case. 'l' is a URL.
-          return l;
+          return l.href;
         } else {
-          // The local case. At least we can append the query string to the URL.
+          // The local developping code. At least we can append the query string to the URL.
           return href;
         }
       };
@@ -225,7 +225,15 @@
         //   func: callback in response.
         //         (status_code, short_url)
         //
-        $.getJSON("https://api-ssl.bitly.com/v3/shorten?callback=?", {
+
+        // If this is http or a local developping code, use http instead.
+        if (location.protocol == 'https:') {
+          var protocol = "https://api-ssl";
+        } else {
+          var protocol = "http://api";
+        }
+
+        $.getJSON(protocol + ".bitly.com/v3/shorten?callback=?", {
             "format": "json",
             "apiKey": "R_f384bb9a1d1248f4a12e72a07b98f7e2",
             "login": "o_67j98qnsjg",
@@ -442,7 +450,7 @@
         var url_for_share = getUrl(
             "?iv_hex=" + iv_hex +
             "&cipher_hex=" + encrypted_hex +
-            "&hint=" + hint).href;
+            "&hint=" + hint);
         $("#url_for_share").val(url_for_share);
         $("#url_div").show();
 
