@@ -48,18 +48,36 @@
     <h5>Shhh.pw is a end-to-end and all client-side encrypted messaging
        service <a id="read_more" href="#">... more</a><span id="more_0">.
        It is perfect to be used to exchange confidential or secret information
-       to another person or a group of people with a pre-shared password, which
-       is the only key able to decrypt the message.</span></h5>
+       with another person or a group of people. The pre-defined password
+       is the only key able to decrypt the messages.</span></h5>
     <span id="more_1">
     <h5>A person having the URL you sent but not having the password cannot
-       decrypt the message. This implies even your ISP cannot decrypt it. Since
-       we don't keep your password, even we cannot decrypt your message.</h5>
+       decrypt the message. This menas your ISP, government, and the court
+       cannot decrypt it. Since we don't save your password, even we cannot
+       decrypt your message.</h5>
 
-    <h5>Since this is all JavaScript, all source code can be found by right-click
-        and 'View Source'. The commit history can be found on
+    <h5>You can trust us by looking into the source code. Since this is all
+        JavaScript, all source code can be found by right-click and
+        'View Source'. Also, the commit history can be found on
         <a href="https://github.com/yjlou/shhh">github</a> as well.</h5>
 
+    <h5>Below is the diagram how your message is encrypted and decrypted.</h5>
+
     <h5><img width="100%" src="encryption.png"></h5>
+
+    <h5>Some highlights are listed below:</h5>
+    <ul>
+      <li>+ The hint message is optional, which is used to remind the receiver what the password is. Note that it is NOT encrypted.
+      <li>+ The pre-defined password is used by both sender and receiver.
+      <li>+ A random IV is generated while encrypted. It is used not only for hashing the encrypt/decrypt keys, but also for block cipher.
+      <li>+ The encrypt key is hashed by the IV and pre-defined password so that even the same password is used with other people, the key is still different.
+      <li>+ The same IV is also used in block cipher to increase the attack difficulty.
+      <li>+ The encrypted message and IV are transmitted via usual channels, for example, Messenger, Whatsapp, WeChat ... It is just an encrypted URL.
+      <li>+ The URL will lead the receiver to the decryption page.
+      <li>+ All the receiver need to do is typing the pre-defined password.
+      <li>+ Then, the original message is decrypted on the receiver side.
+      <li>+ The receiver can reply the message by doing the same procedure with either the same or a different password.
+    </ul>
 
     <h5>Warning: there are still some weaknesses in the communication. For example,
        a browser extension with the ability to read the full content of a page
