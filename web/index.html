@@ -45,21 +45,39 @@
       <i class="small material-icons">email</i>
     </a></h5>
 
-    <h5>Shhh.pw is a end-to-end and all client-side encrypted messaging
+    <h5>Shhh.pw is an end-to-end and all-client-side encryption messaging
        service <a id="read_more" href="#">... more</a><span id="more_0">.
        It is perfect to be used to exchange confidential or secret information
-       to another person or a group of people with a pre-shared password, which
-       is the only key able to decrypt the message.</span></h5>
+       with another person or a group of people. The pre-defined password
+       is the only key able to decrypt the messages.</span></h5>
     <span id="more_1">
     <h5>A person having the URL you sent but not having the password cannot
-       decrypt the message. This implies even your ISP cannot decrypt it. Since
-       we don't keep your password, even we cannot decrypt your message.</h5>
+       decrypt the message. This menas your ISP, government, and the court
+       cannot decrypt it. Since we don't save your password, even we cannot
+       decrypt your message.</h5>
 
-    <h5>Since this is all JavaScript, all source code can be found by right-click
-        and 'View Source'. The commit history can be found on
+    <h5>You can trust us by looking into the source code. Since this is all
+        JavaScript, all source code can be found by right-click and
+        'View Source'. Also, the commit history can be found on
         <a href="https://github.com/yjlou/shhh">github</a> as well.</h5>
 
+    <h5>Below is the diagram how your message is encrypted and decrypted.</h5>
+
     <h5><img width="100%" src="encryption.png"></h5>
+
+    <h5>Some highlights are listed below:</h5>
+    <ul>
+      <li>+ The hint message is optional, which is used to remind the receiver what the password is. Note that it is NOT encrypted.
+      <li>+ The pre-defined password is used by both sender and receiver.
+      <li>+ A random IV is generated while encrypted. It is used not only for hashing the encrypt/decrypt keys, but also for block cipher.
+      <li>+ The encrypt key is hashed by the IV and pre-defined password so that even the same password is used with other people, the key is still different.
+      <li>+ The same IV is also used in block cipher to increase the attack difficulty.
+      <li>+ The encrypted message and IV are transmitted via usual channels, for example, Messenger, Whatsapp, WeChat ... It is just an encrypted URL.
+      <li>+ The URL will lead the receiver to the decryption page.
+      <li>+ All the receiver need to do is typing the pre-defined password.
+      <li>+ Then, the original message is decrypted on the receiver side.
+      <li>+ The receiver can reply the message by doing the same procedure with either the same or a different password.
+    </ul>
 
     <h5>Warning: there are still some weaknesses in the communication. For example,
        a browser extension with the ability to read the full content of a page
@@ -142,59 +160,55 @@
       <h4 id="enc_h2_encrypt" class="row col s12">Send</h4>
       <h4 id="enc_h2_reply" class="row col s12">Reply</h4>
       <div class="row">
-        <form class="col s12">
-          <div class="row">
-            <div class="input-field col s12">
-              <textarea id="plain_text" class="materialize-textarea"
-                        rows="4" cols="80"></textarea>
-              <label for="plain_text">
-                * Enter the text you want to send (can be multiple lines)
-              </label>
-            </div>
-          </div>
+        <div class="input-field col s12">
+          <textarea id="plain_text" class="materialize-textarea"
+                    rows="4" cols="80"></textarea>
+          <label for="plain_text">
+            * Enter the text you want to send (can be multiple lines)
+          </label>
+        </div>
+      </div>
 
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="enc_hint" type=text class="validate">
-              <label for="enc_hint">Hint of password. Will be prompted to
-                                    receiver in plain text.</label>
-            </div>
-          </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="enc_hint" type=text class="validate">
+          <label for="enc_hint">Hint of password. Will be prompted to
+                                receiver in plain text.</label>
+        </div>
+      </div>
 
-          <div class="row">
-            <div class="input-field col s6">
-              <input id="enc_pwd" type=password class="validate">
-              <label for="enc_pwd">* Enter your password here</label>
-            </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="enc_pwd" type=password class="validate">
+          <label for="enc_pwd">* Enter your password here</label>
+        </div>
 
-            <div class="input-field col s2">
-              <button id="btn_enc_visible" class="btn waves-effect waves-light" type="submit">
-                <i class="small material-icons">visibility</i>
-              </button>
-              <button id="btn_enc_invisible" class="btn waves-effect waves-light" type="submit">
-                <i class="small material-icons">visibility_off</i>
-              </button>
-            </div>
+        <div class="input-field col s2">
+          <button id="btn_enc_visible" class="btn waves-effect waves-light" type="submit">
+            <i class="small material-icons">visibility</i>
+          </button>
+          <button id="btn_enc_invisible" class="btn waves-effect waves-light" type="submit">
+            <i class="small material-icons">visibility_off</i>
+          </button>
+        </div>
 
-            <div class="input-field col s4">
-              <button id="btn_encrypt" class="btn waves-effect waves-light"
-                      type="submit"> Encrypt </button>
-            </div>
-          </div>
+        <div class="input-field col s4">
+          <button id="btn_encrypt" class="btn waves-effect waves-light"
+                  type="submit"> Encrypt </button>
+        </div>
+      </div>
 
-          <div id="url_div" class="row">
-            <div class="input-field col s10">
-              <input type=text id="url_for_share" readonly
-                     value="URL for share is not generated yet.">
-              <label for "url_for_share">URL for share</label>
-            </div>
-            <div class="input-field col s2">
-              <button id="btn_copy_url" class="btn waves-effect waves-light"
-                      type="submit" name="action">
-              <i class="small material-icons">content_copy</i>
-            </div>
-          </div>
-        </form>
+      <div id="url_div" class="row">
+        <div class="input-field col s10">
+          <input type=text id="url_for_share" readonly
+                 value="URL for share is not generated yet.">
+          <label for "url_for_share">URL for share</label>
+        </div>
+        <div class="input-field col s2">
+          <button id="btn_copy_url" class="btn waves-effect waves-light"
+                  type="submit" name="action">
+          <i class="small material-icons">content_copy</i>
+        </div>
       </div>
     </div>
     
