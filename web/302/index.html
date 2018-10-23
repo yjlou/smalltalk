@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      function RedirectToBitly() {
+        // Redirect this link to bit.ly. This is for iOS deep linking.
+        //
+        //   https://shhh.pw/302/?GgyY56  --> https://bit.ly/GgyY56
+        var short_link_pos = window.location.href.search(window.location.pathname) +
+                             "/302/?".length;
+        var href = "https://bit.ly/" + window.location.href.substring(short_link_pos);
+        console.log("Redirect to: " + href);
+        location.href = href;
+      }
+      RedirectToBitly();
+    </script>
+  </head>
+  <body>
+    Redirecting to bit.ly...
+  </body>
+</html>
