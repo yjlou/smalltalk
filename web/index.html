@@ -219,11 +219,24 @@
       // For iOS hack: https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
       function copyToClipboard(str) {
         const el = document.createElement('textarea');
-        el.contentEditable = true;  // for iOS
-        el.readOnly = false;  // for iOS
         el.value = str;
         document.body.appendChild(el);
-        el.select();
+
+        if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+          // For iOS only.
+          var range = document.createRange();
+          el.contentEditable = true;
+          el.readOnly = false;
+          range.selectNodeContents(el);
+          var s = window.getSelection();
+          s.removeAllRanges();
+          s.addRange(range);
+          el.setSelectionRange(0, 999999);  // A big number, to cover anything that could be inside
+                                            // the element.
+        } else {
+          // For other moderm browers.
+          el.select();
+        }
         document.execCommand('copy');
         document.body.removeChild(el);
       }
