@@ -216,8 +216,11 @@
     
     <script>
       // Credits: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
+      // For iOS hack: https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
       function copyToClipboard(str) {
         const el = document.createElement('textarea');
+        el.contentEditable = true;  // for iOS
+        el.readOnly = false;  // for iOS
         el.value = str;
         document.body.appendChild(el);
         el.select();
