@@ -527,14 +527,16 @@
         console.log("URL to be shortened: " + url_for_share);
         ShortenUrl(url_for_share, function(status, short_url) {
           if (status == 200) {
-            // Rewrite URL for iOS.
-            //   https://bit.ly/GgyY56 --> https://shhh.tw/302/?GyyG56
-            var bitly_pos = short_url.search("bit.ly/");
-            if (bitly_pos >= 0) {
-              bitly_pos += "bit.ly/".length;  // Points to short hash now.
-              short_url = window.location.protocol + "//" +
-                          window.location.host + "/302/?" +
-                          short_url.substring(bitly_pos);
+            if (0) {  // Temporarily disable this feature.
+              // Rewrite URL for iOS.
+              //   https://bit.ly/GgyY56 --> https://shhh.tw/302/?GyyG56
+              var bitly_pos = short_url.search("bit.ly/");
+              if (bitly_pos >= 0) {
+                bitly_pos += "bit.ly/".length;  // Points to short hash now.
+                short_url = window.location.protocol + "//" +
+                            window.location.host + "/302/?" +
+                            short_url.substring(bitly_pos);
+              }
             }
             $("#url_for_share").val(short_url);
           } else {
