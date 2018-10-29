@@ -34,6 +34,8 @@
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
     <script type="text/javascript" src="https://rawgit.com/emn178/js-sha256/master/build/sha256.min.js"></script>
 
+    <script src="i18n.js"></script>
+
     <style>
       .inline {
         display: inline;
@@ -52,47 +54,47 @@
       </a>
     </h5>
 
-    <h5>Shhh is an online tool to do end-to-end and all-client-side encryption
-        <a id="read_more" href="#">... more</a><span id="more_0">.
+    <h5><span id="short_desc">Shhh is an online tool to do end-to-end and all-client-side encryption</span>
+        <a id="read_more" href="#">... more</a><span id="more_0"><span id="detail_0">.
         It is perfect to be used to exchange confidential or secret information
         with another person or a group of people. The pre-defined password
-        is the only key able to decrypt the encrypted messages.</span></h5>
+        is the only key able to decrypt the encrypted messages.</span></span></h5>
     <span id="more_1">
-    <h5>A person having the URL you sent but not having the password cannot
+    <h5 id="detail_1">A person having the URL you sent but not having the password cannot
         decrypt the message. This menas your ISP, government, and the court
         cannot decrypt it. Since we don't save your password, even we cannot
         decrypt your message.</h5>
 
-    <h5>You can find the full source code on
-        <a href="https://github.com/yjlou/shhh">github</a>. Includes Javascript
-        and Android App code.</h5>
+    <h5><span id="detail_2_0">You can find the full source code on</span>
+        <a href="https://github.com/yjlou/shhh">github</a>
+        <span id="detail_2_1">. Includes Javascript and Android App code.</h5>
 
-    <h5>Below is the diagram how your message is encrypted and decrypted.</h5>
+    <h5 id="detail_3">Below is the diagram how your message is encrypted and decrypted.</h5>
 
     <h5><img width="100%" src="encryption.png"></h5>
 
-    <h5>Some highlights are listed below:</h5>
+    <h5 id="detail_4">Some highlights are listed below:</h5>
     <ul>
-      <li>+ The hint message is optional, which is used to remind the receiver what the password is. Note that it is NOT encrypted.
-      <li>+ The pre-defined password is used by both sender and receiver.
-      <li>+ A random IV is generated while encrypted. It is used not only for hashing the encrypt/decrypt keys, but also for block cipher.
-      <li>+ The encrypt key is hashed by the IV and pre-defined password so that even the same password is used with other people, the key is still different.
-      <li>+ The same IV is also used in block cipher to increase the attack difficulty.
-      <li>+ The encrypted message and IV are transmitted via usual channels, for example, Messenger, Whatsapp, WeChat ... It is just an encrypted URL.
-      <li>+ The URL will lead the receiver to the decryption page.
-      <li>+ All the receiver need to do is typing the pre-defined password.
-      <li>+ Then, the original message is decrypted on the receiver side.
-      <li>+ The receiver can reply the message by doing the same procedure with either the same or a different password.
+      <li id="detail_4_0">+ The hint message is optional, which is used to remind the receiver what the password is. Note that it is NOT encrypted.
+      <li id="detail_4_1">+ The password is pre-defined by both sender and receiver. Or a secret known by both sides.
+      <li id="detail_4_2">+ A random IV is generated while encrypted. It is used not only for hashing the encrypt/decrypt keys, but also for block cipher.
+      <li id="detail_4_3">+ The encrypt key is hashed by the IV and pre-defined password so that even the same password is used with other people, the key is still different.
+      <li id="detail_4_4">+ The same IV is also used in block cipher to increase the attack difficulty.
+      <li id="detail_4_5">+ The encrypted message and IV are transmitted via usual channels, for example, Messenger, Whatsapp, WeChat ... It is just an encrypted URL.
+      <li id="detail_4_6">+ The URL will lead the receiver to the decryption page.
+      <li id="detail_4_7">+ All the receiver need to do is typing the pre-defined password.
+      <li id="detail_4_8">+ Then, the original message is decrypted on the receiver side.
+      <li id="detail_4_9">+ The receiver can reply the message by doing the same procedure with either the same or a different password.
     </ul>
 
-    <h5>Warning: there are still some weaknesses in the communication. For example,
+    <h5 id="detail_5">Warning: there might be still some weaknesses in the communication. For example,
        a browser extension with the ability to read the full content of the HTML page
        can still read your information. Turn off those extensions if you have concerns.</h5>
     </span>
     
     <div id="dec_div">
       <div id="decrypt_prompt">
-        <h4>Decrypt</h4>
+        <h4 id="i18n_decrypt">Decrypt</h4>
 
         <!-- invisible -->
         <textarea id="cipher_hex" rows="4" cols="80"></textarea>
@@ -107,7 +109,7 @@
         <div class="row">
           <div class="input-field col s6">
             <input type=password id="dec_pwd">
-            <label for="dec_pwd">Enter your password here</label>
+            <label id="i18n_dec_pwd" for="dec_pwd">Enter your password here</label>
           </div>
 
           <div class="input-field col s2">
@@ -131,7 +133,7 @@
       <div id="decrypted_div">
         <div class="row">
           <div class="input-field col s12">
-            <h4>Decrypted Text:</h4>
+            <h4 id="i18n_descrypted_text">Decrypted Text:</h4>
           </div>
         </div>
 
@@ -162,13 +164,13 @@
     </div>
     
     <div id="enc_div">
-      <h4 id="enc_h2_encrypt" class="row col s12">Send</h4>
+      <h4 id="enc_h2_encrypt" class="row col s12">Encrypt</h4>
       <h4 id="enc_h2_reply" class="row col s12">Reply</h4>
       <div class="row">
         <div class="input-field col s12">
           <textarea id="plain_text" class="materialize-textarea"
                     rows="4" cols="80"></textarea>
-          <label for="plain_text">
+          <label id="i18n_plain_text" for="plain_text">
             * Enter the text you want to send (can be multiple lines)
           </label>
         </div>
@@ -177,15 +179,15 @@
       <div class="row">
         <div class="input-field col s12">
           <input id="enc_hint" type=text class="validate">
-          <label for="enc_hint">Hint of password. Will be prompted to
-                                receiver in plain text.</label>
+          <label id="i18n_enc_hint" for="enc_hint">Hint of password. Will be prompted to receiver.
+                                                   Not encrypted.</label>
         </div>
       </div>
 
       <div class="row">
         <div class="input-field col s6">
           <input id="enc_pwd" type=password class="validate">
-          <label for="enc_pwd">* Enter your password here</label>
+          <label id="i18n_enc_pwd" for="enc_pwd">* Enter your password here</label>
         </div>
 
         <div class="input-field col s2">
@@ -207,7 +209,7 @@
         <div class="input-field col s10">
           <input type=text id="url_for_share" readonly
                  value="URL for share is not generated yet.">
-          <label for "url_for_share">URL for share</label>
+          <label id="i18n_url_for_share" for "url_for_share">URL for share</label>
         </div>
         <div class="input-field col s2">
           <button id="btn_copy_url" class="btn waves-effect waves-light"
@@ -218,6 +220,12 @@
     </div>
     
     <script>
+      // Messages used to notify user.
+      var i18n_url_copied = "URL copied.";
+      var i18n_no_enc_key = "Encrypt key is not provided yet!";
+      var i18n_gen_too_long = "The generated URL is too long. You still can copy the URL, but the receiver may not completely decode it.";
+      var i18n_shorten_failed = "Cannot shorten the URL. ";
+
       // Credits: https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
       // For iOS hack: https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
       function copyToClipboard(str) {
@@ -481,8 +489,7 @@
         // Check key is input already.
         var enc_pwd = $("#enc_pwd").val();
         if (!enc_pwd) {
-          M.toast({html: 'Encrypt key is not provided yet!',
-                   displayLength: 3000});
+          M.toast({html: i18n_no_enc_key, displayLength: 3000});
           return;
         }
 
@@ -512,8 +519,8 @@
         actual_len = $("#url_for_share").val().length;
         max_url_len = 2053;
         if (actual_len > max_url_len) {
-          M.toast({html: 'The generated URL is too long. Must be shorter than [' + max_url_len +
-                         '] bytes, but actually [' + actual_len + '] bytes.',
+          M.toast({html: i18n_gen_too_long + 'Must be shorter than [' + max_url_len +
+                         '] bytes, but actually [' + actual_len + '] bytes.',  // TODO: i18n
                    displayLength: 10000});
           return;
         }
@@ -540,7 +547,7 @@
             }
             $("#url_for_share").val(short_url);
           } else {
-            M.toast({html: 'Cannot shorten the URL. Error code: [' + status + ']',
+            M.toast({html: i18n_shorten_failed + 'Error code: [' + status + ']',
                      displayLength: 10000});
             return;
           }
@@ -613,7 +620,7 @@
       });
       $("#btn_copy_url").on( "click", function(event) {
         copyToClipboard($("#url_for_share").val());
-        M.toast({html: 'URL copied.'})
+        M.toast({html: i18n_url_copied})
         return false;
       });
       $("#btn_refresh").on( "click", function(event) {
@@ -622,7 +629,7 @@
       });
       $("#btn_copy_decrypted").on( "click", function(event) {
         copyToClipboard($("#decrypted_text").val());
-        M.toast({html: 'URL copied.'})
+        M.toast({html: i18n_url_copied})
         return false;
       });
 
@@ -644,6 +651,10 @@
           btn_decrypt_clicked();
           return false;
         }
+      });
+
+      $(document).ready(function() {
+        ApplyI18N();
       });
     </script>
   </div><!-- end of container --></body>
