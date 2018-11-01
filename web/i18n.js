@@ -2,7 +2,7 @@
 function ApplyI18N() {
   var userLang = navigator.language || navigator.userLanguage; 
 
-  if (userLang == "zh-TW") {
+  if (userLang.startsWith == "zh") {
     $("#short_desc").text("Shhh 是一個幫你加密訊息的線上工具。");
     $("#read_more").text("... 閱讀更多");
     $("#detail_0").text("它非常適合和另外一個人，或是一群人，交換機密資訊或是秘密。透過事先約定好的密碼，就可以加密和解密訊息。");
